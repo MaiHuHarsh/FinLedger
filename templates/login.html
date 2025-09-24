@@ -1,149 +1,5 @@
 {% extends "base.html" %}
 
-{% block title %}ExpenseTracker - Smart Expense Management{% endblock %}
-
-{% block content %}
-<div class="homepage">
-    <div class="hero-section">
-        <div class="hero-content">
-            <h1 class="hero-title">
-                <span class="gradient-text">Smart Expense</span><br>
-                <span class="gradient-text">Management</span>
-            </h1>
-            <p class="hero-subtitle">
-                Take control of your finances with our intuitive expense tracking platform. 
-                Monitor spending, set budgets, and achieve your financial goals effortlessly.
-            </p>
-            <div class="hero-actions">
-                <a href="{{ url_for('login') }}" class="btn btn-primary btn-lg">
-                    Get Started
-                    <span class="btn-icon">→</span>
-                </a>
-                <a href="#features" class="btn btn-secondary btn-lg">
-                    Learn More
-                </a>
-            </div>
-        </div>
-        <div class="hero-visual">
-            <div class="expense-card-demo">
-                <div class="demo-card">
-                    <div class="demo-header">
-                        <span class="demo-date">Today</span>
-                        <span class="demo-amount">₹1,234</span>
-                    </div>
-                    <div class="demo-items">
-                        <div class="demo-item">
-                            <span class="demo-icon">🍕</span>
-                            <span class="demo-text">Lunch</span>
-                            <span class="demo-price">₹450</span>
-                        </div>
-                        <div class="demo-item">
-                            <span class="demo-icon">⛽</span>
-                            <span class="demo-text">Fuel</span>
-                            <span class="demo-price">₹784</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="features-section" id="features">
-        <div class="container">
-            <h2 class="section-title">Why Choose ExpenseTracker?</h2>
-            <div class="features-grid">
-                <div class="feature-card">
-                    <div class="feature-icon">📊</div>
-                    <h3 class="feature-title">Smart Analytics</h3>
-                    <p class="feature-description">
-                        Get detailed insights into your spending patterns with 
-                        interactive charts and reports.
-                    </p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">🔒</div>
-                    <h3 class="feature-title">Secure & Private</h3>
-                    <p class="feature-description">
-                        Your financial data is encrypted and stored securely. 
-                        We never share your information.
-                    </p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">⚡</div>
-                    <h3 class="feature-title">Lightning Fast</h3>
-                    <p class="feature-description">
-                        Add expenses in seconds with our streamlined interface. 
-                        No unnecessary complexity.
-                    </p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">📱</div>
-                    <h3 class="feature-title">Mobile Ready</h3>
-                    <p class="feature-description">
-                        Works perfectly on all devices. Track expenses 
-                        on-the-go with mobile optimization.
-                    </p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="cta-section">
-        <div class="container">
-            <div class="cta-content">
-                <h2 class="cta-title">Ready to take control?</h2>
-                <p class="cta-subtitle">Join thousands of users who are already managing their finances smarter</p>
-                <a href="{{ url_for('login') }}" class="btn btn-primary btn-xl">
-                    Start Tracking Now
-                    <span class="btn-icon">🚀</span>
-                </a>
-            </div>
-        </div>
-    </div>
-</div>
-{% endblock %}
-
-{% block extra_js %}
-<script>
-    // Smooth scrolling for anchor links
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
-            e.preventDefault();
-            document.querySelector(this.getAttribute('href')).scrollIntoView({
-                behavior: 'smooth'
-            });
-        });
-    });
-
-    // Add animation to feature cards on scroll
-    const observerOptions = {
-        threshold: 0.1,
-        rootMargin: '0px 0px -100px 0px'
-    };
-
-    const observer = new IntersectionObserver(function(entries) {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('animate-in');
-            }
-        });
-    }, observerOptions);
-
-    document.querySelectorAll('.feature-card').forEach(card => {
-        observer.observe(card);
-    });
-</script>
-{% endblock %}'''
-
-# Save the homepage template
-with open('templates/index.html', 'w') as f:
-    f.write(index_template)
-
-print("✅ Homepage template (templates/index.html) created successfully!")
-
-# Create the login template
-login_template = '''{% extends "base.html" %}
-
 {% block title %}Login - ExpenseTracker{% endblock %}
 
 {% block content %}
@@ -276,11 +132,11 @@ login_template = '''{% extends "base.html" %}
     document.querySelectorAll('.tab-btn').forEach(button => {
         button.addEventListener('click', function() {
             const tabName = this.getAttribute('data-tab');
-            
+
             // Remove active class from all tabs and content
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-            
+
             // Add active class to clicked tab and corresponding content
             this.classList.add('active');
             document.getElementById(tabName + '-tab').classList.add('active');
@@ -291,7 +147,7 @@ login_template = '''{% extends "base.html" %}
     function togglePassword(inputId) {
         const input = document.getElementById(inputId);
         const toggle = input.nextElementSibling;
-        
+
         if (input.type === 'password') {
             input.type = 'text';
             toggle.textContent = '🙈';
