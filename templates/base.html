@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}ExpenseTracker{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <div class="app-container">
+        <!-- Navigation -->
+        <nav class="navbar" {% if request.endpoint in ['index', 'login', 'register'] %}style="display: none;"{% endif %}>
+            <div class="nav-container">
+                <div class="nav-logo">
+                    <h2>💰 ExpenseTracker</h2>
+                </div>
+                <div class="nav-links">
+                    <a href="{{ url_for('dashboard') }}" class="nav-link {% if request.endpoint == 'dashboard' %}active{% endif %}">
+                        <span class="nav-icon">📊</span>Dashboard
+                    </a>
+                    <a href="{{ url_for('add_expense') }}" class="nav-link {% if request.endpoint == 'add_expense' %}active{% endif %}">
+                        <span class="nav-icon">➕</span>Add Expense
+                    </a>
+                    <a href="{{ url_for('view_expenses') }}" class="nav-link {% if request.endpoint == 'view_expenses' %}active{% endif %}">
+                        <span class="nav-icon">📋</span>View Expenses
+                    </a>
+                </div>
+                <div class="nav-user">
+                    {% if session.username %}
+                        <span class="username">Hello, {{ session.username }}!</span>
+                        <a href="{{ url_for('logout') }}" class="logout-btn">Logout</a>
+                    {% endif %}
+                </div>
+            </div>
+        </nav>
+
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-container">
+                    {% for category, message in messages %}
+                        <div class="flash-message flash-{{ category }}">
+                            <span class="flash-icon">
+                                {% if category == 'success' %}✅
+                                {% elif category == 'error' %}❌
+                                {% elif category == 'info' %}ℹ️
+                                {% else %}📝{% endif %}
+                            </span>
+                            {{ message }}
+                            <button class="flash-close" onclick="this.parentElement.style.display='none'">×</button>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <!-- Main Content -->
+        <main class="main-content">
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

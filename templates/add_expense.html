@@ -1,0 +1,337 @@
+{% extends "base.html" %}
+
+{% block title %}Add Expense - ExpenseTracker{% endblock %}
+
+{% block content %}
+<div class="add-expense-page">
+    <div class="page-header">
+        <div class="header-content">
+            <h1 class="page-title">Add New Expense</h1>
+            <p class="page-subtitle">Track your spending in just a few clicks</p>
+        </div>
+        <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">
+            <span class="btn-icon">←</span>
+            Back to Dashboard
+        </a>
+    </div>
+
+    <div class="expense-form-container">
+        <form method="POST" class="expense-form" id="expenseForm">
+            <div class="form-sections">
+                <!-- Amount Section -->
+                <div class="form-section">
+                    <h3 class="section-title">💰 Amount</h3>
+                    <div class="amount-input-group">
+                        <span class="currency-symbol">₹</span>
+                        <input 
+                            type="number" 
+                            id="amount" 
+                            name="amount" 
+                            class="form-input amount-input" 
+                            placeholder="0.00"
+                            step="0.01"
+                            min="0"
+                            required
+                            autofocus
+                        >
+                    </div>
+                    <div class="amount-suggestions">
+                        <button type="button" class="amount-btn" data-amount="50">₹50</button>
+                        <button type="button" class="amount-btn" data-amount="100">₹100</button>
+                        <button type="button" class="amount-btn" data-amount="250">₹250</button>
+                        <button type="button" class="amount-btn" data-amount="500">₹500</button>
+                    </div>
+                </div>
+
+                <!-- Category Section -->
+                <div class="form-section">
+                    <h3 class="section-title">📁 Category</h3>
+                    <div class="category-grid">
+                        <label class="category-option">
+                            <input type="radio" name="category" value="Food & Dining" required>
+                            <div class="category-card">
+                                <span class="category-icon">🍽️</span>
+                                <span class="category-name">Food & Dining</span>
+                            </div>
+                        </label>
+                        <label class="category-option">
+                            <input type="radio" name="category" value="Transportation">
+                            <div class="category-card">
+                                <span class="category-icon">🚗</span>
+                                <span class="category-name">Transportation</span>
+                            </div>
+                        </label>
+                        <label class="category-option">
+                            <input type="radio" name="category" value="Shopping">
+                            <div class="category-card">
+                                <span class="category-icon">🛍️</span>
+                                <span class="category-name">Shopping</span>
+                            </div>
+                        </label>
+                        <label class="category-option">
+                            <input type="radio" name="category" value="Bills & Utilities">
+                            <div class="category-card">
+                                <span class="category-icon">💡</span>
+                                <span class="category-name">Bills & Utilities</span>
+                            </div>
+                        </label>
+                        <label class="category-option">
+                            <input type="radio" name="category" value="Entertainment">
+                            <div class="category-card">
+                                <span class="category-icon">🎬</span>
+                                <span class="category-name">Entertainment</span>
+                            </div>
+                        </label>
+                        <label class="category-option">
+                            <input type="radio" name="category" value="Healthcare">
+                            <div class="category-card">
+                                <span class="category-icon">🏥</span>
+                                <span class="category-name">Healthcare</span>
+                            </div>
+                        </label>
+                        <label class="category-option">
+                            <input type="radio" name="category" value="Groceries">
+                            <div class="category-card">
+                                <span class="category-icon">🛒</span>
+                                <span class="category-name">Groceries</span>
+                            </div>
+                        </label>
+                        <label class="category-option">
+                            <input type="radio" name="category" value="Other">
+                            <div class="category-card">
+                                <span class="category-icon">💰</span>
+                                <span class="category-name">Other</span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Details Section -->
+                <div class="form-section">
+                    <h3 class="section-title">📝 Details</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="subject" class="form-label">Expense Title *</label>
+                            <input 
+                                type="text" 
+                                id="subject" 
+                                name="subject" 
+                                class="form-input" 
+                                placeholder="e.g., Lunch at restaurant"
+                                required
+                                maxlength="100"
+                            >
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="description" class="form-label">Description (Optional)</label>
+                        <textarea 
+                            id="description" 
+                            name="description" 
+                            class="form-input textarea"
+                            placeholder="Add additional details..."
+                            rows="3"
+                            maxlength="500"
+                        ></textarea>
+                        <div class="char-count">0/500</div>
+                    </div>
+                </div>
+
+                <!-- Date & Time Section -->
+                <div class="form-section">
+                    <h3 class="section-title">🕒 When</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="expense_date" class="form-label">Date *</label>
+                            <input 
+                                type="date" 
+                                id="expense_date" 
+                                name="expense_date" 
+                                class="form-input" 
+                                required
+                            >
+                        </div>
+                        <div class="form-group">
+                            <label for="expense_time" class="form-label">Time *</label>
+                            <input 
+                                type="time" 
+                                id="expense_time" 
+                                name="expense_time" 
+                                class="form-input" 
+                                required
+                            >
+                        </div>
+                    </div>
+                    <div class="datetime-suggestions">
+                        <button type="button" class="datetime-btn" onclick="setCurrentDateTime()">
+                            <span class="btn-icon">🕒</span>
+                            Current Time
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Submit Section -->
+            <div class="form-actions">
+                <button type="button" class="btn btn-secondary" onclick="clearForm()">
+                    Clear Form
+                </button>
+                <button type="submit" class="btn btn-primary btn-lg">
+                    <span class="btn-icon">✅</span>
+                    Save Expense
+                </button>
+            </div>
+        </form>
+
+        <!-- Quick Add Panel -->
+        <div class="quick-add-panel">
+            <h3 class="panel-title">Quick Add</h3>
+            <p class="panel-subtitle">Common expenses for faster entry</p>
+            <div class="quick-add-buttons">
+                <button type="button" class="quick-add-btn" data-category="Food & Dining" data-subject="Coffee" data-amount="50">
+                    ☕ Coffee ₹50
+                </button>
+                <button type="button" class="quick-add-btn" data-category="Transportation" data-subject="Auto/Taxi" data-amount="100">
+                    🚕 Ride ₹100
+                </button>
+                <button type="button" class="quick-add-btn" data-category="Food & Dining" data-subject="Lunch" data-amount="200">
+                    🍽️ Lunch ₹200
+                </button>
+                <button type="button" class="quick-add-btn" data-category="Transportation" data-subject="Fuel" data-amount="500">
+                    ⛽ Fuel ₹500
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Set current date and time as default
+    document.addEventListener('DOMContentLoaded', function() {
+        setCurrentDateTime();
+    });
+
+    function setCurrentDateTime() {
+        const now = new Date();
+        const dateStr = now.toISOString().split('T')[0];
+        const timeStr = now.toTimeString().split(' ')[0].substring(0, 5);
+        
+        document.getElementById('expense_date').value = dateStr;
+        document.getElementById('expense_time').value = timeStr;
+    }
+
+    // Amount suggestion buttons
+    document.querySelectorAll('.amount-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const amount = this.getAttribute('data-amount');
+            document.getElementById('amount').value = amount;
+            document.getElementById('amount').focus();
+        });
+    });
+
+    // Quick add functionality
+    document.querySelectorAll('.quick-add-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const category = this.getAttribute('data-category');
+            const subject = this.getAttribute('data-subject');
+            const amount = this.getAttribute('data-amount');
+            
+            // Set values
+            document.getElementById('amount').value = amount;
+            document.getElementById('subject').value = subject;
+            
+            // Select category radio button
+            const categoryRadio = document.querySelector(`input[name="category"][value="${category}"]`);
+            if (categoryRadio) {
+                categoryRadio.checked = true;
+                categoryRadio.closest('.category-option').classList.add('selected');
+            }
+            
+            // Focus on next input
+            document.getElementById('description').focus();
+        });
+    });
+
+    // Category selection visual feedback
+    document.querySelectorAll('input[name="category"]').forEach(radio => {
+        radio.addEventListener('change', function() {
+            // Remove selected class from all options
+            document.querySelectorAll('.category-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            // Add selected class to current option
+            this.closest('.category-option').classList.add('selected');
+        });
+    });
+
+    // Character count for description
+    const descriptionTextarea = document.getElementById('description');
+    const charCount = document.querySelector('.char-count');
+    
+    descriptionTextarea.addEventListener('input', function() {
+        const currentLength = this.value.length;
+        charCount.textContent = `${currentLength}/500`;
+        
+        if (currentLength > 450) {
+            charCount.style.color = '#ef4444';
+        } else {
+            charCount.style.color = '#64748b';
+        }
+    });
+
+    // Clear form function
+    function clearForm() {
+        document.getElementById('expenseForm').reset();
+        document.querySelectorAll('.category-option').forEach(option => {
+            option.classList.remove('selected');
+        });
+        setCurrentDateTime();
+        document.getElementById('amount').focus();
+        charCount.textContent = '0/500';
+        charCount.style.color = '#64748b';
+    }
+
+    // Form submission with loading state
+    document.getElementById('expenseForm').addEventListener('submit', function(e) {
+        const submitBtn = this.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerHTML;
+        
+        submitBtn.innerHTML = '<span class="btn-icon">⏳</span>Saving...';
+        submitBtn.disabled = true;
+        
+        // Re-enable after 3 seconds (in case of error)
+        setTimeout(() => {
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+        }, 3000);
+    });
+
+    // Auto-save to localStorage (optional)
+    const formElements = ['amount', 'subject', 'description'];
+    
+    formElements.forEach(elementId => {
+        const element = document.getElementById(elementId);
+        
+        // Load saved data
+        const savedValue = localStorage.getItem(`expense_${elementId}`);
+        if (savedValue && !element.value) {
+            element.value = savedValue;
+        }
+        
+        // Save data on input
+        element.addEventListener('input', function() {
+            localStorage.setItem(`expense_${elementId}`, this.value);
+        });
+    });
+
+    // Clear localStorage on successful submit
+    document.getElementById('expenseForm').addEventListener('submit', function() {
+        formElements.forEach(elementId => {
+            localStorage.removeItem(`expense_${elementId}`);
+        });
+    });
+</script>
+{% endblock %}

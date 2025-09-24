@@ -1,0 +1,199 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - ExpenseTracker{% endblock %}
+
+{% block content %}
+<div class="dashboard">
+    <div class="dashboard-header">
+        <div class="welcome-section">
+            <h1 class="dashboard-title">Welcome back, {{ session.username }}! 👋</h1>
+            <p class="dashboard-subtitle">Here's your financial overview for today</p>
+        </div>
+        <div class="quick-actions">
+            <a href="{{ url_for('add_expense') }}" class="btn btn-primary">
+                <span class="btn-icon">➕</span>
+                Add Expense
+            </a>
+            <a href="{{ url_for('view_expenses') }}" class="btn btn-secondary">
+                <span class="btn-icon">📊</span>
+                View All
+            </a>
+        </div>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon">💰</div>
+            <div class="stat-content">
+                <h3 class="stat-value">₹{{ "%.2f"|format(monthly_total) }}</h3>
+                <p class="stat-label">This Month</p>
+            </div>
+            <div class="stat-trend positive">
+                <span class="trend-icon">📈</span>
+                <span class="trend-value">+2.5%</span>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon">📅</div>
+            <div class="stat-content">
+                <h3 class="stat-value">{{ recent_expenses|length }}</h3>
+                <p class="stat-label">Recent Transactions</p>
+            </div>
+            <div class="stat-trend neutral">
+                <span class="trend-icon">➡️</span>
+                <span class="trend-value">Today</span>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon">🎯</div>
+            <div class="stat-content">
+                <h3 class="stat-value">₹5,000</h3>
+                <p class="stat-label">Budget Left</p>
+            </div>
+            <div class="stat-trend positive">
+                <span class="trend-icon">✅</span>
+                <span class="trend-value">On track</span>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon">📊</div>
+            <div class="stat-content">
+                <h3 class="stat-value">{% if recent_expenses %}₹{{ "%.2f"|format(recent_expenses[0].amount) }}{% else %}₹0{% endif %}</h3>
+                <p class="stat-label">Last Expense</p>
+            </div>
+            <div class="stat-trend negative">
+                <span class="trend-icon">🔽</span>
+                <span class="trend-value">{% if recent_expenses %}{{ recent_expenses[0].subject[:10] }}...{% else %}None{% endif %}</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="dashboard-content">
+        <div class="recent-expenses">
+            <div class="section-header">
+                <h2 class="section-title">Recent Expenses</h2>
+                <a href="{{ url_for('view_expenses') }}" class="section-link">View All</a>
+            </div>
+            
+            {% if recent_expenses %}
+                <div class="expense-list">
+                    {% for expense in recent_expenses %}
+                    <div class="expense-item">
+                        <div class="expense-icon">
+                            {% if expense.category == 'Food & Dining' %}🍽️
+                            {% elif expense.category == 'Transportation' %}🚗
+                            {% elif expense.category == 'Shopping' %}🛍️
+                            {% elif expense.category == 'Bills & Utilities' %}💡
+                            {% elif expense.category == 'Entertainment' %}🎬
+                            {% elif expense.category == 'Healthcare' %}🏥
+                            {% elif expense.category == 'Groceries' %}🛒
+                            {% elif expense.category == 'Gas' %}⛽
+                            {% else %}💰{% endif %}
+                        </div>
+                        <div class="expense-details">
+                            <h4 class="expense-subject">{{ expense.subject }}</h4>
+                            <p class="expense-meta">
+                                {{ expense.category }} • 
+                                {{ expense.expense_date }} at {{ expense.expense_time }}
+                            </p>
+                            {% if expense.description %}
+                                <p class="expense-description">{{ expense.description[:50] }}{% if expense.description|length > 50 %}...{% endif %}</p>
+                            {% endif %}
+                        </div>
+                        <div class="expense-amount">
+                            <span class="amount">₹{{ "%.2f"|format(expense.amount) }}</span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <div class="empty-icon">📝</div>
+                    <h3 class="empty-title">No expenses yet</h3>
+                    <p class="empty-description">Start tracking your expenses by adding your first transaction</p>
+                    <a href="{{ url_for('add_expense') }}" class="btn btn-primary">
+                        <span class="btn-icon">➕</span>
+                        Add First Expense
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="insights-panel">
+            <div class="section-header">
+                <h2 class="section-title">Quick Insights</h2>
+            </div>
+            
+            <div class="insight-cards">
+                <div class="insight-card">
+                    <div class="insight-header">
+                        <span class="insight-icon">🏆</span>
+                        <h4 class="insight-title">Top Category</h4>
+                    </div>
+                    <p class="insight-value">Food & Dining</p>
+                    <p class="insight-description">45% of your spending</p>
+                </div>
+
+                <div class="insight-card">
+                    <div class="insight-header">
+                        <span class="insight-icon">📈</span>
+                        <h4 class="insight-title">Daily Average</h4>
+                    </div>
+                    <p class="insight-value">₹{{ "%.0f"|format(monthly_total / 30) }}</p>
+                    <p class="insight-description">Based on this month</p>
+                </div>
+
+                <div class="insight-card">
+                    <div class="insight-header">
+                        <span class="insight-icon">💡</span>
+                        <h4 class="insight-title">Tip</h4>
+                    </div>
+                    <p class="insight-value">Save 20%</p>
+                    <p class="insight-description">Set a monthly budget</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Add loading states and animations
+    document.addEventListener('DOMContentLoaded', function() {
+        // Animate stat cards
+        const statCards = document.querySelectorAll('.stat-card');
+        statCards.forEach((card, index) => {
+            setTimeout(() => {
+                card.classList.add('animate-in');
+            }, index * 100);
+        });
+
+        // Animate expense items
+        const expenseItems = document.querySelectorAll('.expense-item');
+        expenseItems.forEach((item, index) => {
+            setTimeout(() => {
+                item.classList.add('animate-in');
+            }, 300 + (index * 50));
+        });
+    });
+
+    // Update time every minute
+    function updateTime() {
+        const now = new Date();
+        const timeString = now.toLocaleTimeString('en-IN', { 
+            hour: '2-digit', 
+            minute: '2-digit' 
+        });
+        document.querySelectorAll('.current-time').forEach(el => {
+            el.textContent = timeString;
+        });
+    }
+
+    setInterval(updateTime, 60000);
+    updateTime(); // Initial call
+</script>
+{% endblock %}
